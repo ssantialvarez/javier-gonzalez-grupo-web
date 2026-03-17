@@ -13,9 +13,28 @@ export const Header: GlobalConfig = {
       name: 'navItems',
       type: 'array',
       fields: [
+        {
+          name: 'hasSubMenu',
+          type: 'checkbox',
+          label: 'Tiene submenú (Dropdown)',
+        },
         link({
           appearances: false,
         }),
+        {
+          name: 'subMenuLinks',
+          type: 'array',
+          label: 'Enlaces del Submenú',
+          admin: {
+            condition: (_, siblingData) => Boolean(siblingData?.hasSubMenu),
+            initCollapsed: true,
+          },
+          fields: [
+            link({
+              appearances: false,
+            }),
+          ],
+        },
       ],
       maxRows: 6,
       admin: {

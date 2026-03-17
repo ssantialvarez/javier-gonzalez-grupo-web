@@ -70,9 +70,23 @@ export const MobileMenu: React.FC<MobileMenuProps> = ({ isOpen, onClose, navItem
 
           {/* Nav items */}
           <div className="flex flex-col gap-4">
-            {navItems?.map(({ link }, i) => (
-              <CMSLink key={i} {...link} appearance="link" className="text-lg" />
-            ))}
+            {navItems?.map(({ link, hasSubMenu, subMenuLinks }, i) => {
+              if (hasSubMenu && subMenuLinks && subMenuLinks.length > 0) {
+                return (
+                  <div key={i} className="flex flex-col gap-2">
+                    <CMSLink {...link} appearance="link" className="text-lg font-semibold" />
+                    <div className="flex flex-col gap-2 pl-4 border-l border-border ml-2">
+                      {subMenuLinks.map(({ link: subLink }, j) => (
+                        <CMSLink key={j} {...subLink} appearance="link" className="text-base opacity-80" />
+                      ))}
+                    </div>
+                  </div>
+                )
+              }
+              return (
+                <CMSLink key={i} {...link} appearance="link" className="text-lg" />
+              )
+            })}
           </div>
         </div>
       </nav>
