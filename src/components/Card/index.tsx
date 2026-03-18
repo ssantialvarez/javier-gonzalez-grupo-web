@@ -4,81 +4,114 @@ import useClickableCard from '@/utilities/useClickableCard'
 import Link from 'next/link'
 import React, { Fragment } from 'react'
 
-import type { Post } from '@/payload-types'
+import type { Post, Media as MediaType } from '@/payload-types'
 
 import { Media } from '@/components/Media'
+import { Dialog, DialogContent, DialogTrigger, DialogTitle } from '@/components/ui/dialog'
 
 export type CardPostData = Pick<Post, 'slug' | 'categories' | 'meta' | 'title'>
 
 export const Card: React.FC<{
   alignItems?: 'center'
   className?: string
-  doc?: CardPostData
-  relationTo?: 'posts'
+  doc?: CardPostData | MediaType
+  relationTo?: 'posts' | 'media'
   showCategories?: boolean
   title?: string
 }> = (props) => {
   const { card, link } = useClickableCard({})
-  const { className, doc, relationTo, showCategories, title: titleFromProps } = props
+  const { className, doc, relationTo = 'posts', showCategories, title: titleFromProps } = props
 
-  const { slug, categories, meta, title } = doc || {}
+  const isMedia = relationTo === 'media'
+
+  // Safe cast since we know the shape based on relationTo
+  const postDoc = !isMedia ? (doc as CardPostData) : null
+  const mediaDoc = isMedia ? (doc as MediaType) : null
+
+  const { slug, categories, meta, title } = postDoc || {}
   const { description, image: metaImage } = meta || {}
 
   const hasCategories = categories && Array.isArray(categories) && categories.length > 0
-  const titleToUse = titleFromProps || title
+  const titleToUse = !isMedia ? titleFromProps || title : null
   const sanitizedDescription = description?.replace(/\s/g, ' ') // replace non-breaking space with white space
-  const href = `/${relationTo}/${slug}`
+  const href = !isMedia ? `/${relationTo}/${slug}` : null
 
   return (
     <article
       className={cn(
-        'border border-border rounded-lg overflow-hidden bg-card hover:cursor-pointer',
+        'border border-border rounded-lg overflow-hidden bg-card hover:cursor-pointer flex flex-col h-full',
         className,
       )}
       ref={card.ref}
     >
       <div className="relative w-full ">
-        {!metaImage && <div className="">No image</div>}
-        {metaImage && typeof metaImage !== 'string' && <Media resource={metaImage} size="33vw" />}
-      </div>
-      <div className="p-4">
-        {showCategories && hasCategories && (
-          <div className="uppercase text-sm mb-4">
-            {showCategories && hasCategories && (
-              <div>
-                {categories?.map((category, index) => {
-                  if (typeof category === 'object') {
-                    const { title: titleFromCategory } = category
-
-                    const categoryTitle = titleFromCategory || 'Untitled category'
-
-                    const isLast = index === categories.length - 1
-
-                    return (
-                      <Fragment key={index}>
-                        {categoryTitle}
-                        {!isLast && <Fragment>, &nbsp;</Fragment>}
-                      </Fragment>
-                    )
-                  }
-
-                  return null
-                })}
+        {!isMedia && !metaImage && <div className="">No image</div>}
+        {!isMedia && metaImage && typeof metaImage !== 'string' && (
+          <Media resource={metaImage} size="33vw" />
+        )}
+        {isMedia && mediaDoc && (
+          <Dialog>
+            <DialogTrigger asChild>
+              <div className="hover:opacity-90 transition-opacity w-full h-[300px] flex justify-center items-center overflow-hidden">
+                <Media resource={mediaDoc} size="33vw" imgClassName="w-full h-full object-cover" />
               </div>
-            )}
-          </div>
+            </DialogTrigger>
+            <DialogContent className="max-w-7xl max-h-[100dvh] w-full border-none bg-transparent p-0 flex justify-center items-center shadow-none">
+              <DialogTitle className="sr-only">Image preview</DialogTitle>
+              <Media
+                resource={mediaDoc}
+                imgClassName="max-h-[90vh] w-auto object-contain rounded-md"
+              />
+            </DialogContent>
+          </Dialog>
         )}
-        {titleToUse && (
-          <div className="prose">
-            <h3>
-              <Link className="not-prose" href={href} ref={link.ref}>
-                {titleToUse}
-              </Link>
-            </h3>
-          </div>
-        )}
-        {description && <div className="mt-2">{description && <p>{sanitizedDescription}</p>}</div>}
       </div>
+      {!isMedia && (
+        <div className="p-4">
+          {showCategories && hasCategories && (
+            <div className="uppercase text-sm mb-4">
+              {showCategories && hasCategories && (
+                <div>
+                  {categories?.map((category, index) => {
+                    if (typeof category === 'object') {
+                      const { title: titleFromCategory } = category
+
+                      const categoryTitle = titleFromCategory || 'Untitled category'
+
+                      const isLast = index === categories.length - 1
+
+                      return (
+                        <Fragment key={index}>
+                          {categoryTitle}
+                          {!isLast && <Fragment>, &nbsp;</Fragment>}
+                        </Fragment>
+                      )
+                    }
+
+                    return null
+                  })}
+                </div>
+              )}
+            </div>
+          )}
+          {titleToUse && (
+            <div className="prose">
+              <h3>
+                {href ? (
+                  <Link className="not-prose" href={href} ref={link.ref}>
+                    {titleToUse}
+                  </Link>
+                ) : (
+                  <span className="not-prose">{titleToUse}</span>
+                )}
+              </h3>
+            </div>
+          )}
+          {description && (
+            <div className="mt-2">{description && <p>{sanitizedDescription}</p>}</div>
+          )}
+        </div>
+      )}
     </article>
   )
 }

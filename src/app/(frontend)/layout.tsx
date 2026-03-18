@@ -34,6 +34,8 @@ export default async function RootLayout({ children }: { children: React.ReactNo
             }}
           />
 
+          {/* Spacer for fixed header */}
+          <div className="h-[88px]" aria-hidden="true" />
           <Header />
           {children}
           <Footer />
