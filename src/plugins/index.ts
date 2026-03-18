@@ -8,6 +8,7 @@ import { revalidateRedirects } from '@/hooks/revalidateRedirects'
 import { GenerateTitle, GenerateURL } from '@payloadcms/plugin-seo/types'
 import { FixedToolbarFeature, HeadingFeature, lexicalEditor } from '@payloadcms/richtext-lexical'
 import { searchFields } from '@/search/fieldOverrides'
+import { vercelBlobStorage } from '@payloadcms/storage-vercel-blob'
 import { beforeSyncWithSearch } from '@/search/beforeSync'
 
 import { Page, Post } from '@/payload-types'
@@ -88,5 +89,12 @@ export const plugins: Plugin[] = [
         return [...defaultFields, ...searchFields]
       },
     },
+  }),
+  vercelBlobStorage({
+    enabled: true, // Puedes poner process.env.NODE_ENV === 'production' si quieres seguir usando local en tu PC
+    collections: {
+      media: true, // Esto debe coincidir exactamente con el 'slug' de tu colección Media
+    },
+    token: process.env.BLOB_READ_WRITE_TOKEN || '',
   }),
 ]
