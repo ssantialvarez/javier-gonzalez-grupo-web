@@ -1,5 +1,6 @@
 import type { TextFieldSingleValidation } from 'payload'
 import {
+  AlignFeature,
   BoldFeature,
   ItalicFeature,
   LinkFeature,
@@ -11,6 +12,7 @@ import {
 
 export const defaultLexical = lexicalEditor({
   features: [
+    AlignFeature(),
     ParagraphFeature(),
     UnderlineFeature(),
     BoldFeature(),
