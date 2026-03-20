@@ -58,6 +58,6 @@ export default async function Page() {
 
 export function generateMetadata(): Metadata {
   return {
-    title: `Payload Website Template Posts`,
+    title: `Publicaciones - Novedades - Javier González Grupo | ${process.env.NEXT_PUBLIC_SITE_NAME}`,
   }
 }
