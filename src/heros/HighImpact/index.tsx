@@ -8,21 +8,62 @@ import { CMSLink } from '@/components/Link'
 import { Media } from '@/components/Media'
 import RichText from '@/components/RichText'
 
-export const HighImpactHero: React.FC<Page['hero']> = ({ links, media, richText }) => {
+export const HighImpactHero: React.FC<Page['hero']> = ({
+  links,
+  media,
+  richText,
+  mediaPosition = 'center',
+  contentAlignment = 'center',
+  contentVerticalAlignment = 'center',
+}) => {
   const { setHeaderTheme } = useHeaderTheme()
 
   useEffect(() => {
     setHeaderTheme('dark')
   })
 
+  // Dynamic classes for alignment and image positioning
+  const alignmentClasses: Record<string, string> = {
+    left: 'justify-start',
+    center: 'justify-center',
+    right: 'justify-end',
+  }
+
+  const verticalAlignmentClasses: Record<string, string> = {
+    top: 'items-start pt-32', // Added padding top to clear the header
+    center: 'items-center',
+    bottom: 'items-end pb-32', // Added padding bottom to not overlap buttons
+  }
+
+  const textAlignmentClasses: Record<string, string> = {
+    left: 'md:text-left',
+    center: 'md:text-center',
+    right: 'md:text-right',
+  }
+
+  const positionClasses: Record<string, string> = {
+    top: 'object-top',
+    center: 'object-center',
+    bottom: 'object-bottom',
+    left: 'object-left',
+    right: 'object-right',
+  }
+
+  // Fallback to center if somehow value is not mapped
+  const alignmentClass = alignmentClasses[contentAlignment || 'center'] || 'justify-center'
+  const verticalAlignmentClass =
+    verticalAlignmentClasses[contentVerticalAlignment || 'center'] || 'items-center'
+  const textAlignmentClass = textAlignmentClasses[contentAlignment || 'center'] || 'md:text-center'
+  const positionClass = positionClasses[mediaPosition || 'center'] || 'object-center'
+
   return (
     <div
-      className="relative -mt-[10.4rem] flex items-center justify-center text-white min-h-[80vh]"
+      className={`relative -mt-[10.4rem] flex justify-center text-white min-h-[80vh] ${verticalAlignmentClass}`}
       data-theme="dark"
     >
-      {/* Contenedor del Título y Subtítulo (centrado) */}
-      <div className="container mb-8 z-10 relative flex justify-center bg">
-        <div className="max-w-[36.5rem] md:text-center">
+      {/* Contenedor del Título y Subtítulo */}
+      <div className={`container mb-8 z-10 relative flex w-full ${alignmentClass}`}>
+        <div className={`max-w-[36.5rem] ${textAlignmentClass}`}>
           {richText && <RichText className="mb-6" data={richText} enableGutter={false} />}
         </div>
       </div>
@@ -45,7 +86,12 @@ export const HighImpactHero: React.FC<Page['hero']> = ({ links, media, richText 
       {/* Contenedor de Imagen */}
       <div className="absolute inset-0 select-none">
         {media && typeof media === 'object' && (
-          <Media fill imgClassName="-z-10 object-cover" priority resource={media} />
+          <Media
+            fill
+            imgClassName={`-z-10 object-cover ${positionClass}`}
+            priority
+            resource={media}
+          />
         )}
       </div>
     </div>

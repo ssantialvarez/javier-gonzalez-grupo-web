@@ -39,6 +39,34 @@ export const hero: Field = {
       required: true,
     },
     {
+      name: 'contentAlignment',
+      type: 'select',
+      defaultValue: 'center',
+      label: 'Content Alignment (Horizontal)',
+      admin: {
+        condition: (_, { type } = {}) => ['highImpact', 'mediumImpact'].includes(type),
+      },
+      options: [
+        { label: 'Left', value: 'left' },
+        { label: 'Center', value: 'center' },
+        { label: 'Right', value: 'right' },
+      ],
+    },
+    {
+      name: 'contentVerticalAlignment',
+      type: 'select',
+      defaultValue: 'center',
+      label: 'Content Alignment (Vertical)',
+      admin: {
+        condition: (_, { type } = {}) => ['highImpact', 'mediumImpact'].includes(type),
+      },
+      options: [
+        { label: 'Top', value: 'top' },
+        { label: 'Center', value: 'center' },
+        { label: 'Bottom', value: 'bottom' },
+      ],
+    },
+    {
       name: 'richText',
       type: 'richText',
       editor: lexicalEditor({
@@ -66,6 +94,22 @@ export const hero: Field = {
       },
       relationTo: 'media',
       required: true,
+    },
+    {
+      name: 'mediaPosition',
+      type: 'select',
+      defaultValue: 'center',
+      label: 'Image Position',
+      admin: {
+        condition: (_, { type } = {}) => ['highImpact', 'mediumImpact'].includes(type),
+      },
+      options: [
+        { label: 'Top', value: 'top' },
+        { label: 'Center', value: 'center' },
+        { label: 'Bottom', value: 'bottom' },
+        { label: 'Left', value: 'left' },
+        { label: 'Right', value: 'right' },
+      ],
     },
   ],
   label: false,
