@@ -17,9 +17,11 @@ import {
   lexicalEditor,
   type LinkFields,
 } from '@payloadcms/richtext-lexical'
+import { TextSizeFeature } from '@payloadcms-toolbox/lexical-text-size'
 
 export const defaultLexical = lexicalEditor({
   features: [
+    TextSizeFeature(),
     AlignFeature(),
     BoldFeature(),
     ChecklistFeature(),

@@ -34,6 +34,7 @@ const nextConfig = {
     return webpackConfig
   },
   reactStrictMode: true,
+  transpilePackages: ['@payloadcms-toolbox/lexical-text-size'],
   redirects,
 }
 
