@@ -8,6 +8,7 @@ import type { Post, Media as MediaType } from '@/payload-types'
 
 import { Media } from '@/components/Media'
 import { Dialog, DialogContent, DialogTrigger, DialogTitle } from '@/components/ui/dialog'
+import { getMediaUrl } from '@/utilities/getMediaUrl'
 
 export type CardPostData = Pick<Post, 'slug' | 'categories' | 'meta' | 'title'>
 
@@ -39,7 +40,9 @@ export const Card: React.FC<{
   return (
     <article
       className={cn(
-        'border border-border rounded-lg overflow-hidden bg-card hover:cursor-pointer flex flex-col h-full',
+        isMedia
+          ? 'overflow-hidden hover:cursor-pointer'
+          : 'border border-border rounded-lg overflow-hidden bg-card hover:cursor-pointer flex flex-col h-full',
         className,
       )}
       ref={card.ref}
@@ -52,15 +55,18 @@ export const Card: React.FC<{
         {isMedia && mediaDoc && (
           <Dialog>
             <DialogTrigger asChild>
-              <div className="hover:opacity-90 transition-opacity w-full h-[300px] flex justify-center items-center overflow-hidden">
-                <Media resource={mediaDoc} size="33vw" imgClassName="w-full h-full object-cover" />
+              <div className="hover:opacity-90 transition-opacity w-full overflow-hidden cursor-pointer">
+                <Media resource={mediaDoc} size="33vw" imgClassName="w-full h-auto" />
               </div>
             </DialogTrigger>
             <DialogContent className="max-w-7xl max-h-[100dvh] w-full border-none bg-transparent p-0 flex justify-center items-center shadow-none">
               <DialogTitle className="sr-only">Image preview</DialogTitle>
-              <Media
-                resource={mediaDoc}
-                imgClassName="max-h-[90vh] w-auto object-contain rounded-md"
+              {/* Plain img bypasses Next.js Image optimization, fixing Vercel Blob large-image loading */}
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={getMediaUrl(mediaDoc.url, mediaDoc.updatedAt)}
+                alt={mediaDoc.alt || ''}
+                className="max-h-[90vh] w-auto object-contain rounded-md"
               />
             </DialogContent>
           </Dialog>
