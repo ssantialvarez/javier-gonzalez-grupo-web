@@ -796,8 +796,14 @@ export interface Form {
  * via the `definition` "YouTubeBlock".
  */
 export interface YouTubeBlock {
-  url: string;
-  caption?: string | null;
+  columns: '1' | '2' | '3';
+  videos?:
+    | {
+        url: string;
+        caption?: string | null;
+        id?: string | null;
+      }[]
+    | null;
   id?: string | null;
   blockName?: string | null;
   blockType: 'youtubeBlock';
@@ -1219,8 +1225,14 @@ export interface FormBlockSelect<T extends boolean = true> {
  * via the `definition` "YouTubeBlock_select".
  */
 export interface YouTubeBlockSelect<T extends boolean = true> {
-  url?: T;
-  caption?: T;
+  columns?: T;
+  videos?:
+    | T
+    | {
+        url?: T;
+        caption?: T;
+        id?: T;
+      };
   id?: T;
   blockName?: T;
 }
