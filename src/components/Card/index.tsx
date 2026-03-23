@@ -40,7 +40,9 @@ export const Card: React.FC<{
   return (
     <article
       className={cn(
-        'border border-border rounded-lg overflow-hidden bg-card hover:cursor-pointer flex flex-col h-full',
+        isMedia
+          ? 'overflow-hidden hover:cursor-pointer'
+          : 'border border-border rounded-lg overflow-hidden bg-card hover:cursor-pointer flex flex-col h-full',
         className,
       )}
       ref={card.ref}
