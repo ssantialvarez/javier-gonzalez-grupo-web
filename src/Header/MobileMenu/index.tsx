@@ -2,6 +2,7 @@
 
 import { X } from 'lucide-react'
 import React, { useEffect } from 'react'
+import { createPortal } from 'react-dom'
 import { cn } from '@/utilities/ui'
 import { CMSLink } from '@/components/Link'
 import type { Header } from '@/payload-types'
@@ -39,9 +40,10 @@ export const MobileMenu: React.FC<MobileMenuProps> = ({ isOpen, onClose, navItem
   }, [isOpen])
 
   if (!isOpen) return null
+  if (typeof document === 'undefined') return null
 
-  return (
-    <div className="fixed inset-0 z-50 md:hidden">
+  return createPortal(
+    <div className="fixed inset-0 z-[100] md:hidden">
       {/* Overlay */}
       <div
         className="absolute inset-0 bg-black/50 transition-opacity"
@@ -77,19 +79,23 @@ export const MobileMenu: React.FC<MobileMenuProps> = ({ isOpen, onClose, navItem
                     <CMSLink {...link} appearance="link" className="text-lg font-semibold" />
                     <div className="flex flex-col gap-2 pl-4 border-l border-border ml-2">
                       {subMenuLinks.map(({ link: subLink }, j) => (
-                        <CMSLink key={j} {...subLink} appearance="link" className="text-base opacity-80" />
+                        <CMSLink
+                          key={j}
+                          {...subLink}
+                          appearance="link"
+                          className="text-base opacity-80"
+                        />
                       ))}
                     </div>
                   </div>
                 )
               }
-              return (
-                <CMSLink key={i} {...link} appearance="link" className="text-lg" />
-              )
+              return <CMSLink key={i} {...link} appearance="link" className="text-lg" />
             })}
           </div>
         </div>
       </nav>
-    </div>
+    </div>,
+    document.body,
   )
 }

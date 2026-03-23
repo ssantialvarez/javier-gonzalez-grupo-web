@@ -74,7 +74,7 @@ export const HeaderClient: React.FC<HeaderClientProps> = ({ data }) => {
           </div>
 
           {/* Centered Logo */}
-          <div className="flex-shrink-0 md:px-8">
+          <div className="hidden md:flex flex-shrink-0 md:px-8">
             <Link href="/">
               <Logo loading="eager" priority="high" className="invert dark:invert-0" />
             </Link>
