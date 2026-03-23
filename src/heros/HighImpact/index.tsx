@@ -11,8 +11,10 @@ import RichText from '@/components/RichText'
 export const HighImpactHero: React.FC<Page['hero']> = ({
   links,
   media,
+  mediaMobile,
   richText,
   mediaPosition = 'center',
+  mediaPositionMobile,
   contentAlignment = 'center',
   contentVerticalAlignment = 'center',
 }) => {
@@ -41,7 +43,8 @@ export const HighImpactHero: React.FC<Page['hero']> = ({
     right: 'md:text-right',
   }
 
-  const positionClasses: Record<string, string> = {
+  // Position classes without breakpoint prefix (for mobile layer)
+  const mobilePositionClasses: Record<string, string> = {
     top: 'object-top',
     center: 'object-center',
     bottom: 'object-bottom',
@@ -49,12 +52,29 @@ export const HighImpactHero: React.FC<Page['hero']> = ({
     right: 'object-right',
   }
 
+  // Position classes with md: prefix (for desktop layer)
+  const desktopPositionClasses: Record<string, string> = {
+    top: 'md:object-top',
+    center: 'md:object-center',
+    bottom: 'md:object-bottom',
+    left: 'md:object-left',
+    right: 'md:object-right',
+  }
+
   // Fallback to center if somehow value is not mapped
   const alignmentClass = alignmentClasses[contentAlignment || 'center'] || 'justify-center'
   const verticalAlignmentClass =
     verticalAlignmentClasses[contentVerticalAlignment || 'center'] || 'items-center'
   const textAlignmentClass = textAlignmentClasses[contentAlignment || 'center'] || 'md:text-center'
-  const positionClass = positionClasses[mediaPosition || 'center'] || 'object-center'
+
+  // Effective positions: mobile inherits desktop if not set
+  const effectiveMobilePos = mediaPositionMobile || mediaPosition || 'center'
+  const effectiveDesktopPos = mediaPosition || 'center'
+
+  const mobilePositionClass = mobilePositionClasses[effectiveMobilePos] || 'object-center'
+  const desktopPositionClass = desktopPositionClasses[effectiveDesktopPos] || 'md:object-center'
+
+  const hasMobileImage = mediaMobile && typeof mediaMobile === 'object'
 
   return (
     <div
@@ -83,17 +103,43 @@ export const HighImpactHero: React.FC<Page['hero']> = ({
         </div>
       )}
 
-      {/* Contenedor de Imagen */}
-      <div className="absolute inset-0 select-none">
-        {media && typeof media === 'object' && (
-          <Media
-            fill
-            imgClassName={`-z-10 object-cover ${positionClass}`}
-            priority
-            resource={media}
-          />
-        )}
-      </div>
+      {/* Contenedor de Imagen — art direction: imagen móvil + imagen escritorio */}
+      {hasMobileImage ? (
+        <>
+          {/* Imagen para móvil (oculta en md y superior) */}
+          <div className="md:hidden absolute inset-0 select-none">
+            <Media
+              fill
+              imgClassName={`-z-10 object-cover ${mobilePositionClass}`}
+              priority
+              resource={mediaMobile}
+            />
+          </div>
+          {/* Imagen para escritorio (visible solo en md y superior) */}
+          <div className="hidden md:block absolute inset-0 select-none">
+            {media && typeof media === 'object' && (
+              <Media
+                fill
+                imgClassName={`-z-10 object-cover ${desktopPositionClass}`}
+                priority
+                resource={media}
+              />
+            )}
+          </div>
+        </>
+      ) : (
+        /* Sin imagen móvil: misma imagen con posición CSS por breakpoint */
+        <div className="absolute inset-0 select-none">
+          {media && typeof media === 'object' && (
+            <Media
+              fill
+              imgClassName={`-z-10 object-cover ${mobilePositionClass} ${desktopPositionClass}`}
+              priority
+              resource={media}
+            />
+          )}
+        </div>
+      )}
     </div>
   )
 }

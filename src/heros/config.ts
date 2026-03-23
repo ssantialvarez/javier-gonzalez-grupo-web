@@ -102,6 +102,8 @@ export const hero: Field = {
       label: 'Image Position',
       admin: {
         condition: (_, { type } = {}) => ['highImpact', 'mediumImpact'].includes(type),
+        description:
+          'Position of the image on desktop (and on mobile if no mobile-specific settings are set)',
       },
       options: [
         { label: 'Top', value: 'top' },
@@ -110,6 +112,34 @@ export const hero: Field = {
         { label: 'Left', value: 'left' },
         { label: 'Right', value: 'right' },
       ],
+    },
+    {
+      name: 'mediaPositionMobile',
+      type: 'select',
+      label: 'Image Position (Mobile)',
+      admin: {
+        condition: (_, { type } = {}) => type === 'highImpact',
+        description:
+          'Overrides the image crop position on mobile. Leave empty to inherit the desktop position.',
+      },
+      options: [
+        { label: 'Top', value: 'top' },
+        { label: 'Center', value: 'center' },
+        { label: 'Bottom', value: 'bottom' },
+        { label: 'Left', value: 'left' },
+        { label: 'Right', value: 'right' },
+      ],
+    },
+    {
+      name: 'mediaMobile',
+      type: 'upload',
+      label: 'Image (Mobile)',
+      admin: {
+        condition: (_, { type } = {}) => type === 'highImpact',
+        description:
+          'Optional separate image for mobile screens. If not set, the main image is used.',
+      },
+      relationTo: 'media',
     },
   ],
   label: false,

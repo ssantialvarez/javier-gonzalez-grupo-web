@@ -202,7 +202,18 @@ export interface Page {
         }[]
       | null;
     media?: (number | null) | Media;
+    /**
+     * Position of the image on desktop (and on mobile if no mobile-specific settings are set)
+     */
     mediaPosition?: ('top' | 'center' | 'bottom' | 'left' | 'right') | null;
+    /**
+     * Overrides the image crop position on mobile. Leave empty to inherit the desktop position.
+     */
+    mediaPositionMobile?: ('top' | 'center' | 'bottom' | 'left' | 'right') | null;
+    /**
+     * Optional separate image for mobile screens. If not set, the main image is used.
+     */
+    mediaMobile?: (number | null) | Media;
   };
   layout: (CallToActionBlock | ContentBlock | MediaBlock | ArchiveBlock | FormBlock | YouTubeBlock)[];
   meta?: {
@@ -1110,6 +1121,8 @@ export interface PagesSelect<T extends boolean = true> {
             };
         media?: T;
         mediaPosition?: T;
+        mediaPositionMobile?: T;
+        mediaMobile?: T;
       };
   layout?:
     | T
