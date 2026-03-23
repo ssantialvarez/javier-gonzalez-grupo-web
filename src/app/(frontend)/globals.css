@@ -24,6 +24,12 @@
 
 @plugin "@tailwindcss/typography";
 
+/* Hardcoded heading sizes for all RichText fields — edit these to change heading font sizes */
+.payload-richtext h1 { font-size: 3rem; }
+.payload-richtext h2 { font-size: 2.25rem; }
+.payload-richtext h3 { font-size: 1.75rem; }
+.payload-richtext h4 { font-size: 1.375rem; }
+
 @source inline("lg:col-span-4");
 @source inline("lg:col-span-6");
 @source inline("lg:col-span-8");
