@@ -22,26 +22,32 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   const { isEnabled } = await draftMode()
 
   return (
-    <html className={cn(GeistSans.variable, GeistMono.variable)} lang="en" suppressHydrationWarning>
+    <html
+      className={cn(GeistSans.variable, GeistMono.variable, 'overflow-x-hidden')}
+      lang="en"
+      suppressHydrationWarning
+    >
       <head>
         <InitTheme />
         <link href="/favicon.ico" rel="icon" sizes="32x32" />
         <link href="/favicon.svg" rel="icon" type="image/svg+xml" />
       </head>
-      <body>
-        <Providers>
-          <AdminBar
-            adminBarProps={{
-              preview: isEnabled,
-            }}
-          />
+      <body className="overflow-x-hidden antialiased">
+        <div className="relative min-h-screen flex flex-col overflow-x-hidden">
+          <Providers>
+            <AdminBar
+              adminBarProps={{
+                preview: isEnabled,
+              }}
+            />
 
-          {/* Spacer for fixed header */}
-          <div className="h-[88px]" aria-hidden="true" />
-          <Header />
-          {children}
-          <Footer />
-        </Providers>
+            {/* Spacer for fixed header */}
+            <div className="h-[88px]" aria-hidden="true" />
+            <Header />
+            <main className="flex-grow w-full overflow-x-hidden">{children}</main>
+            <Footer />
+          </Providers>
+        </div>
         <Analytics />
       </body>
     </html>
